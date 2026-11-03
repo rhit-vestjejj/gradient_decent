@@ -1,0 +1,5 @@
+bin/
+data/
+*.o
+*.dSYM/
+__pycache__/

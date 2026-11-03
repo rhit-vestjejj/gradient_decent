@@ -1,0 +1,33 @@
+#!/bin/bash
+#PBS -N ffnn_sgd
+#PBS -l nodes=1:ppn=1
+#PBS -l walltime=00:30:00
+#PBS -o output.txt
+#PBS -e error.txt
+
+cd $PBS_O_WORKDIR
+
+# Print some job information
+echo "Job started on: $(date)"
+echo "Job ID: $PBS_JOBID"
+echo "Job Name: $PBS_JOBNAME"
+echo "Working directory: $PWD"
+echo "Running on node: $(hostname)"
+echo "=========================================="
+
+# =====
+# Instructions:
+#
+# Before submitting, download MNIST once on the login node:
+#     make data
+# (Compute nodes may not have internet access.)
+#
+# Uncomment the part that you're working on, and leave the others commented.
+# =====
+
+# > Baseline: serial FFNN
+make baseline_test
+make baseline_time
+
+echo "=========================================="
+echo "Job completed on: $(date)"
