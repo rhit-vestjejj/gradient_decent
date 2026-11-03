@@ -1,0 +1,149 @@
+Job started on: Mon Nov  2 20:26:55 EST 2026
+Job ID: 17826.grendel
+Job Name: ffnn_sgd
+Working directory: /home/vestjejj/gradient_decent
+Running on node: grendel-w1
+==========================================
+mkdir -p bin
+gcc -Wall -Wextra -O2 -fopenmp -std=c99 -Itest_framework -o bin/test_baseline test_framework/test_baseline_nn.c baseline_nn.c test_framework/network.c test_framework/mnist.c -lm -fopenmp
+Testing baseline (serial) FFNN...
+./bin/test_baseline
+=== Baseline (serial) FFNN Tests ===
+
+Network 4-3-2:
+  seed=1000
+    forward vs reference: max err 3.92e-08, sum(p) = 1.000000  PASS
+    gradient check: 18 weights, max rel err 1.31e-07, 0 bad  PASS
+    SGD update rule: max err 0.00e+00  PASS
+  seed=1001
+    forward vs reference: max err 1.49e-08, sum(p) = 1.000000  PASS
+    gradient check: 18 weights, max rel err 5.63e-08, 0 bad  PASS
+    SGD update rule: max err 0.00e+00  PASS
+  seed=1002
+    forward vs reference: max err 5.92e-09, sum(p) = 1.000000  PASS
+    gradient check: 18 weights, max rel err 5.84e-08, 0 bad  PASS
+    SGD update rule: max err 0.00e+00  PASS
+    SGD on 8 fixed samples: loss 1.5254 -> 0.5490  PASS
+
+Network 6-5-4-3:
+  seed=1010
+    forward vs reference: max err 5.37e-08, sum(p) = 1.000000  PASS
+    gradient check: 62 weights, max rel err 2.75e-06, 0 bad  PASS
+    SGD update rule: max err 0.00e+00  PASS
+  seed=1011
+    forward vs reference: max err 9.93e-09, sum(p) = 1.000000  PASS
+    gradient check: 62 weights, max rel err 1.25e-07, 0 bad  PASS
+    SGD update rule: max err 0.00e+00  PASS
+  seed=1012
+    forward vs reference: max err 4.63e-08, sum(p) = 1.000000  PASS
+    gradient check: 62 weights, max rel err 1.44e-07, 0 bad  PASS
+    SGD update rule: max err 0.00e+00  PASS
+    SGD on 8 fixed samples: loss 0.9391 -> 0.2033  PASS
+
+Network 10-1-7-3:
+  seed=1020
+    forward vs reference: max err 9.93e-09, sum(p) = 1.000000  PASS
+    gradient check: 38 weights, max rel err 6.89e-07, 0 bad  PASS
+    SGD update rule: max err 0.00e+00  PASS
+  seed=1021
+    forward vs reference: max err 9.93e-09, sum(p) = 1.000000  PASS
+    gradient check: 38 weights, max rel err 0.00e+00, 0 bad  PASS
+    SGD update rule: max err 0.00e+00  PASS
+  seed=1022
+    forward vs reference: max err 9.93e-09, sum(p) = 1.000000  PASS
+    gradient check: 38 weights, max rel err 2.05e-07, 0 bad  PASS
+    SGD update rule: max err 0.00e+00  PASS
+    SGD on 8 fixed samples: loss 1.0983 -> 0.7604  PASS
+
+Network 8-16-16-16-16-5:
+  seed=1030
+    forward vs reference: max err 1.36e-08, sum(p) = 1.000000  PASS
+    gradient check: 976 weights, max rel err 1.55e-06, 0 bad  PASS
+    SGD update rule: max err 0.00e+00  PASS
+  seed=1031
+    forward vs reference: max err 3.74e-08, sum(p) = 1.000000  PASS
+    gradient check: 976 weights, max rel err 9.55e-07, 0 bad  PASS
+    SGD update rule: max err 0.00e+00  PASS
+  seed=1032
+    forward vs reference: max err 2.86e-08, sum(p) = 1.000000  PASS
+    gradient check: 976 weights, max rel err 3.11e-06, 0 bad  PASS
+    SGD update rule: max err 0.00e+00  PASS
+    SGD on 8 fixed samples: loss 1.7042 -> 0.0124  PASS
+
+Network 784-32-32-10:
+  seed=1040
+    forward vs reference: max err 1.90e-07, sum(p) = 1.000000  PASS
+    gradient check: 1237 weights, max rel err 3.32e-06, 0 bad  PASS
+    SGD update rule: max err 0.00e+00  PASS
+  seed=1041
+    forward vs reference: max err 5.23e-08, sum(p) = 1.000000  PASS
+    gradient check: 1237 weights, max rel err 7.60e-06, 0 bad  PASS
+    SGD update rule: max err 0.00e+00  PASS
+  seed=1042
+    forward vs reference: max err 1.64e-07, sum(p) = 1.000000  PASS
+    gradient check: 1237 weights, max rel err 1.48e-06, 0 bad  PASS
+    SGD update rule: max err 0.00e+00  PASS
+    SGD on 8 fixed samples: loss 2.9095 -> 0.0015  PASS
+
+MNIST sanity run:
+    784-64-10, 10k SGD steps: test accuracy 90.3% (need > 85%)  PASS
+
+=== Final Results ===
+Total tests: 51
+Passed: 51
+Failed: 0
+
+All tests PASSED!
+gcc -Wall -Wextra -O2 -fopenmp -std=c99 -Itest_framework -o bin/timing_baseline test_framework/timing_baseline.c baseline_nn.c test_framework/network.c test_framework/mnist.c -lm -fopenmp
+Running baseline FFNN timing analysis...
+./bin/timing_baseline baseline_timing_results.csv 64 256 1024 4096
+Running baseline FFNN timing...
+Output: baseline_timing_results.csv
+MNIST training samples: 60000
+Trial method: best of 5 trials per configuration
+
+Network 784-[64 x 2]-10:
+  serial     (1 thread)...     0.065 ms/step  (fwd 0.042, bwd 0.002, upd 0.020)  [55050 params, 2000 steps]
+
+Network 784-[256 x 2]-10:
+  serial     (1 thread)...     0.355 ms/step  (fwd 0.206, bwd 0.051, upd 0.098)  [269322 params, 1856 steps]
+
+Network 784-[1024 x 2]-10:
+  serial     (1 thread)...     5.301 ms/step  (fwd 1.460, bwd 3.156, upd 0.685)  [1863690 params, 268 steps]
+
+Network 784-[4096 x 2]-10:
+  serial     (1 thread)...   135.671 ms/step  (fwd 16.007, bwd 112.237, upd 7.426)  [20037642 params, 24 steps]
+
+Network 784-[64 x 4]-10:
+  serial     (1 thread)...     0.077 ms/step  (fwd 0.047, bwd 0.006, upd 0.023)  [63370 params, 2000 steps]
+
+Network 784-[256 x 4]-10:
+  serial     (1 thread)...     0.596 ms/step  (fwd 0.299, bwd 0.151, upd 0.146)  [400906 params, 1247 steps]
+
+Network 784-[1024 x 4]-10:
+  serial     (1 thread)...    20.804 ms/step  (fwd 3.106, bwd 16.244, upd 1.454)  [3962890 params, 126 steps]
+
+Network 784-[4096 x 4]-10:
+  serial     (1 thread)...   397.714 ms/step  (fwd 43.372, bwd 332.592, upd 21.750)  [53600266 params, 9 steps]
+
+Timing complete! Results written to baseline_timing_results.csv
+
+
+========================================================================================================
+BASELINE SERIAL FFNN TIMING SUMMARY
+========================================================================================================
+Hidden   Width    Params       ms/step      Forward        Backward       Update         GFLOP/s   
+layers                                      ms (%)         ms (%)         ms (%)                   
+--------------------------------------------------------------------------------------------------------
+2        64       55050        0.065        0.042 (65%)    0.002 (4%)     0.020 (31%)    5.10      
+2        256      269322       0.355        0.206 (58%)    0.051 (14%)    0.098 (28%)    4.56      
+2        1024     1863690      5.301        1.460 (28%)    3.156 (60%)    0.685 (13%)    2.11      
+2        4096     20037642     135.671      16.007 (12%)   112.237 (83%)  7.426 (5%)     0.89      
+4        64       63370        0.077        0.047 (62%)    0.006 (8%)     0.023 (30%)    4.95      
+4        256      400906       0.596        0.299 (50%)    0.151 (25%)    0.146 (24%)    4.04      
+4        1024     3962890      20.804       3.106 (15%)    16.244 (78%)   1.454 (7%)     1.14      
+4        4096     53600266     397.714      43.372 (11%)   332.592 (84%)  21.750 (5%)    0.81      
+========================================================================================================
+Plot saved to baseline_analysis.png
+==========================================
+Job completed on: Mon Nov  2 20:28:06 EST 2026
