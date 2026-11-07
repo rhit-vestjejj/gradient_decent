@@ -17,7 +17,58 @@ def serial_time(df, hl, width):
     return r['time_per_step'].iloc[0] if not r.empty else float('nan')
 
 
-def create_plots(df, output_prefix='parallel'):
+IMPL_COLORS = {'partial': 'tab:blue', 'transposed': 'tab:orange'}
+
+
+def _rows(df, m, hl, w):
+    return df[(df['impl'] == m) & (df['hidden_layers'] == hl) & (df['width'] == w)].sort_values('threads')
+
+
+def plot_vs_baseline(df, output_prefix):
+    impls = [m for m in ['partial', 'transposed'] if m in set(df['impl'])]
+    layer_counts = sorted(df['hidden_layers'].unique())
+    widths = sorted(df['width'].unique())
+    threads = sorted(df[df['impl'] != 'serial']['threads'].unique())
+
+    fig, axes = plt.subplots(len(layer_counts), len(widths),
+                             figsize=(5 * len(widths), 4.5 * len(layer_counts)), squeeze=False)
+    fig.suptitle('Time per SGD Step vs Serial Baseline', fontsize=16, fontweight='bold')
+
+    for r, hl in enumerate(layer_counts):
+        for c, w in enumerate(widths):
+            ax = axes[r][c]
+            st = serial_time(df, hl, w) * 1e3
+            ax.axhline(st, color='black', linestyle='--', linewidth=2, label='serial baseline')
+            best = None
+            for m in impls:
+                d = _rows(df, m, hl, w)
+                if d.empty:
+                    continue
+                ms = d['time_per_step'] * 1e3
+                ax.plot(d['threads'], ms, marker='o', linewidth=2, color=IMPL_COLORS[m], label=NAMES[m])
+                k = ms.idxmin()
+                if best is None or ms[k] < best[0]:
+                    best = (ms[k], m, int(d.loc[k, 'threads']))
+            ax.set_ylim(bottom=0, top=st * 1.15)
+            ax.set_xticks(threads)
+            ax.set_xlabel('Threads')
+            ax.set_ylabel('ms per step')
+            title = f'{hl} hidden x {w} wide'
+            if best:
+                title += f'\nbest: {st / best[0]:.1f}x faster ({NAMES[best[1]].lower()}, {best[2]}T)'
+            ax.set_title(title)
+            ax.grid(True, alpha=0.3)
+            if r == 0 and c == 0:
+                ax.legend()
+
+    plt.tight_layout()
+    name = f'{output_prefix}_vs_baseline.png'
+    plt.savefig(name, dpi=150, bbox_inches='tight')
+    print(f"Plot saved to {name}")
+    plt.close()
+
+
+def plot_scaling(df, output_prefix):
     impls = [m for m in ['partial', 'transposed'] if m in set(df['impl'])]
     layer_counts = sorted(df['hidden_layers'].unique())
     widths = sorted(df['width'].unique())
@@ -25,50 +76,38 @@ def create_plots(df, output_prefix='parallel'):
     cmap = plt.get_cmap('viridis')
     colors = {w: cmap(k / max(1, len(widths) - 1)) for k, w in enumerate(widths)}
 
-    fig, axes = plt.subplots(len(layer_counts), 3, figsize=(20, 6 * len(layer_counts)), squeeze=False)
-    fig.suptitle('Parallel FFNN Strong Scaling (MNIST, SGD, float32)', fontsize=16, fontweight='bold')
+    fig, axes = plt.subplots(len(layer_counts), len(impls),
+                             figsize=(7 * len(impls), 5.5 * len(layer_counts)), squeeze=False)
+    fig.suptitle('Strong Scaling (speedup vs same version at 1 thread)', fontsize=16, fontweight='bold')
 
     for r, hl in enumerate(layer_counts):
         for c, m in enumerate(impls):
             ax = axes[r][c]
             for w in widths:
-                d = df[(df['impl'] == m) & (df['hidden_layers'] == hl) & (df['width'] == w)].sort_values('threads')
+                d = _rows(df, m, hl, w)
                 if d.empty:
                     continue
-                base = d[d['threads'] == d['threads'].min()]['time_per_step'].iloc[0]
+                base = d['time_per_step'].iloc[0]
                 ax.plot(d['threads'], base / d['time_per_step'], marker='o', linewidth=2,
                         color=colors[w], label=f'width {w}')
             ax.plot(threads, threads, '--', color='black', alpha=0.5, label='ideal')
             ax.set_xlabel('Threads')
-            ax.set_ylabel('Speedup vs same impl at 1 thread')
+            ax.set_ylabel('Speedup')
             ax.set_title(f'{NAMES[m]} ({hl} hidden layers)')
             ax.set_xticks(threads)
             ax.legend()
             ax.grid(True, alpha=0.3)
 
-        ax = axes[r][2]
-        for w in widths:
-            st = serial_time(df, hl, w)
-            for m, style in zip(impls, ['-', '--']):
-                d = df[(df['impl'] == m) & (df['hidden_layers'] == hl) & (df['width'] == w)].sort_values('threads')
-                if d.empty:
-                    continue
-                ax.plot(d['threads'], st / d['time_per_step'], marker='o', linestyle=style,
-                        linewidth=2, color=colors[w], label=f'{m}, width {w}')
-        ax.axhline(1.0, color='black', linestyle=':', alpha=0.5)
-        ax.set_xlabel('Threads')
-        ax.set_ylabel('Speedup vs serial baseline')
-        ax.set_yscale('log', base=2)
-        ax.set_title(f'Speedup vs Serial Baseline ({hl} hidden layers)')
-        ax.set_xticks(threads)
-        ax.legend(fontsize=8, ncol=2)
-        ax.grid(True, which='both', alpha=0.3)
-
     plt.tight_layout()
-    plot_filename = f'{output_prefix}_analysis.png'
-    plt.savefig(plot_filename, dpi=150, bbox_inches='tight')
-    print(f"Plot saved to {plot_filename}")
+    name = f'{output_prefix}_scaling.png'
+    plt.savefig(name, dpi=150, bbox_inches='tight')
+    print(f"Plot saved to {name}")
     plt.close()
+
+
+def create_plots(df, output_prefix='parallel'):
+    plot_vs_baseline(df, output_prefix)
+    plot_scaling(df, output_prefix)
 
 
 def print_summary_table(df):
