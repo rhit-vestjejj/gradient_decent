@@ -45,6 +45,7 @@ Network *network_create(int num_layers, const int *sizes, unsigned int seed) {
     net->a = xmalloc((num_layers + 1) * sizeof(float *));
     net->z = xmalloc((num_layers + 1) * sizeof(float *));
     net->delta = xmalloc((num_layers + 1) * sizeof(float *));
+    net->WT = NULL;
 
     unsigned int state = seed ? seed : 1u;
 
@@ -88,6 +89,10 @@ void network_free(Network *net) {
         free(net->z[l]);
         free(net->delta[l]);
     }
+    if (net->WT) {
+        for (int l = 0; l < net->num_layers; l++) free(net->WT[l]);
+        free(net->WT);
+    }
     free(net->W);
     free(net->b);
     free(net->a);
@@ -95,6 +100,18 @@ void network_free(Network *net) {
     free(net->delta);
     free(net->sizes);
     free(net);
+}
+
+void network_alloc_transpose(Network *net) {
+    if (net->WT) return;
+    net->WT = xmalloc(net->num_layers * sizeof(float *));
+    for (int l = 0; l < net->num_layers; l++) {
+        int in = net->sizes[l], out = net->sizes[l + 1];
+        net->WT[l] = xmalloc((size_t)out * in * sizeof(float));
+        for (int j = 0; j < out; j++)
+            for (int i = 0; i < in; i++)
+                net->WT[l][(size_t)i * out + j] = net->W[l][(size_t)j * in + i];
+    }
 }
 
 long network_num_params(const Network *net) {

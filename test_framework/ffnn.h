@@ -36,6 +36,8 @@ typedef struct {
     float **a;           // a[l], l = 0..num_layers, length sizes[l]
     float **z;           // z[l], l = 1..num_layers (z[0] unused, NULL)
     float **delta;       // delta[l], l = 1..num_layers (delta[0] unused, NULL)
+
+    float **WT;          // optional transposed copy, WT[l] is sizes[l] x sizes[l+1]
 } Network;
 
 /* ---------------------------------------------------------------------------
@@ -45,6 +47,7 @@ Network *network_create(int num_layers, const int *sizes, unsigned int seed);
 void network_free(Network *net);
 long network_num_params(const Network *net);
 void network_copy_params(const Network *src, Network *dst);  // same shape
+void network_alloc_transpose(Network *net);           // allocate + fill WT from W
 float network_loss(const Network *net, int label);   // CE loss of last forward
 int network_predict(const Network *net);              // argmax of last forward
 
@@ -68,6 +71,16 @@ int network_predict(const Network *net);              // argmax of last forward
 void forward_serial(Network *net, const float *x);
 void backward_serial(Network *net, int label);
 void update_serial(Network *net, float lr);
+
+// Partial sums: neurons split across threads, backward via per-thread partial sums
+void forward_partial(Network *net, const float *x);
+void backward_partial(Network *net, int label);
+void update_partial(Network *net, float lr);
+
+// Transposed: neurons split across threads, backward via transposed weight copy
+void forward_transposed(Network *net, const float *x);
+void backward_transposed(Network *net, int label);
+void update_transposed(Network *net, float lr);
 
 // Convenience: one full SGD step using a given implementation
 typedef struct {

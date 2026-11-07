@@ -1,7 +1,7 @@
 #!/bin/bash
 #PBS -N ffnn_sgd
-#PBS -l nodes=1:ppn=1
-#PBS -l walltime=00:30:00
+#PBS -l nodes=1:ppn=12
+#PBS -l walltime=01:00:00
 #PBS -o output.txt
 #PBS -e error.txt
 
@@ -26,8 +26,13 @@ echo "=========================================="
 # =====
 
 # > Baseline: serial FFNN
-make baseline_test
-make baseline_time
+# make baseline_test
+# make baseline_time
+
+# > Neuron split: partial sums vs transposed copy
+make partial_test
+make transposed_test
+make parallel_time
 
 echo "=========================================="
 echo "Job completed on: $(date)"

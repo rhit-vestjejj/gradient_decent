@@ -20,6 +20,7 @@ endif
 # Hidden-layer widths for timing (hidden layer counts 2 and 4 are set in
 # the timing program).
 TIMING_WIDTHS = 64 256 1024 4096
+THREAD_COUNTS = 1,2,4,6,8,12
 
 # MNIST download mirror (the original yann.lecun.com links are unreliable)
 MNIST_URL = https://ossci-datasets.s3.amazonaws.com/mnist
@@ -45,9 +46,12 @@ help:
 	@echo ""
 	@echo "Testing your implementations:"
 	@echo "  make baseline_test  - Test baseline (serial) implementation"
+	@echo "  make partial_test    - Test neuron split, backward via per-thread partial sums"
+	@echo "  make transposed_test - Test neuron split, backward via transposed weight copy"
 	@echo ""
 	@echo "Performance timing:"
 	@echo "  make baseline_time  - Time baseline serial SGD step, write CSV + plot"
+	@echo "  make parallel_time  - Strong scaling: serial vs partial vs transposed over THREAD_COUNTS"
 	@echo ""
 	@echo "Utility commands:"
 	@echo "  make clean          - Remove all compiled files and results"
@@ -86,6 +90,21 @@ baseline_time: bin/timing_baseline
 		echo "CSV results saved to baseline_timing_results.csv"; \
 	fi
 
+partial_test: bin/test_parallel
+	./bin/test_parallel partial
+
+transposed_test: bin/test_parallel
+	./bin/test_parallel transposed
+
+parallel_time: bin/timing_parallel
+	./bin/timing_parallel parallel_timing_results.csv $(THREAD_COUNTS) $(TIMING_WIDTHS)
+	@echo ""
+	@if command -v python3 >/dev/null 2>&1; then \
+		python3 test_framework/analyze_parallel.py parallel_timing_results.csv; \
+	else \
+		echo "Python3 not found - skipping plot generation"; \
+	fi
+
 # ============================================================================
 # Build Rules
 # ============================================================================
@@ -102,5 +121,13 @@ bin/test_baseline: test_framework/test_baseline_nn.c baseline_nn.c $(FRAMEWORK) 
 bin/timing_baseline: test_framework/timing_baseline.c baseline_nn.c $(FRAMEWORK) $(HEADERS) | bin
 	$(CC) $(CFLAGS) -o $@ $(filter %.c,$^) $(LDFLAGS)
 
+PARALLEL = partial_sums_nn.c transposed_nn.c
+
+bin/test_parallel: test_framework/test_parallel_nn.c baseline_nn.c $(PARALLEL) $(FRAMEWORK) $(HEADERS) | bin
+	$(CC) $(CFLAGS) -o $@ $(filter %.c,$^) $(LDFLAGS)
+
+bin/timing_parallel: test_framework/timing_parallel.c baseline_nn.c $(PARALLEL) $(FRAMEWORK) $(HEADERS) | bin
+	$(CC) $(CFLAGS) -o $@ $(filter %.c,$^) $(LDFLAGS)
+
 # Mark targets as phony
-.PHONY: help clean data baseline_test baseline_time
+.PHONY: help clean data baseline_test baseline_time partial_test transposed_test parallel_time
