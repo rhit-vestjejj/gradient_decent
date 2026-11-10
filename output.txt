@@ -1,149 +1,287 @@
-Job started on: Mon Nov  2 20:26:55 EST 2026
-Job ID: 17826.grendel
+Job started on: Fri Nov  6 23:18:33 EST 2026
+Job ID: 18160.grendel
 Job Name: ffnn_sgd
 Working directory: /home/vestjejj/gradient_decent
 Running on node: grendel-w1
 ==========================================
-mkdir -p bin
-gcc -Wall -Wextra -O2 -fopenmp -std=c99 -Itest_framework -o bin/test_baseline test_framework/test_baseline_nn.c baseline_nn.c test_framework/network.c test_framework/mnist.c -lm -fopenmp
-Testing baseline (serial) FFNN...
-./bin/test_baseline
-=== Baseline (serial) FFNN Tests ===
+gcc -Wall -Wextra -O2 -fopenmp -std=c99 -Itest_framework -o bin/test_parallel test_framework/test_parallel_nn.c baseline_nn.c partial_sums_nn.c transposed_nn.c test_framework/network.c test_framework/mnist.c -lm -fopenmp
+./bin/test_parallel partial
+=== partial vs serial baseline ===
 
-Network 4-3-2:
-  seed=1000
-    forward vs reference: max err 3.92e-08, sum(p) = 1.000000  PASS
-    gradient check: 18 weights, max rel err 1.31e-07, 0 bad  PASS
-    SGD update rule: max err 0.00e+00  PASS
-  seed=1001
-    forward vs reference: max err 1.49e-08, sum(p) = 1.000000  PASS
-    gradient check: 18 weights, max rel err 5.63e-08, 0 bad  PASS
-    SGD update rule: max err 0.00e+00  PASS
-  seed=1002
-    forward vs reference: max err 5.92e-09, sum(p) = 1.000000  PASS
-    gradient check: 18 weights, max rel err 5.84e-08, 0 bad  PASS
-    SGD update rule: max err 0.00e+00  PASS
-    SGD on 8 fixed samples: loss 1.5254 -> 0.5490  PASS
-
-Network 6-5-4-3:
-  seed=1010
-    forward vs reference: max err 5.37e-08, sum(p) = 1.000000  PASS
-    gradient check: 62 weights, max rel err 2.75e-06, 0 bad  PASS
-    SGD update rule: max err 0.00e+00  PASS
-  seed=1011
-    forward vs reference: max err 9.93e-09, sum(p) = 1.000000  PASS
-    gradient check: 62 weights, max rel err 1.25e-07, 0 bad  PASS
-    SGD update rule: max err 0.00e+00  PASS
-  seed=1012
-    forward vs reference: max err 4.63e-08, sum(p) = 1.000000  PASS
-    gradient check: 62 weights, max rel err 1.44e-07, 0 bad  PASS
-    SGD update rule: max err 0.00e+00  PASS
-    SGD on 8 fixed samples: loss 0.9391 -> 0.2033  PASS
-
-Network 10-1-7-3:
-  seed=1020
-    forward vs reference: max err 9.93e-09, sum(p) = 1.000000  PASS
-    gradient check: 38 weights, max rel err 6.89e-07, 0 bad  PASS
-    SGD update rule: max err 0.00e+00  PASS
-  seed=1021
-    forward vs reference: max err 9.93e-09, sum(p) = 1.000000  PASS
-    gradient check: 38 weights, max rel err 0.00e+00, 0 bad  PASS
-    SGD update rule: max err 0.00e+00  PASS
-  seed=1022
-    forward vs reference: max err 9.93e-09, sum(p) = 1.000000  PASS
-    gradient check: 38 weights, max rel err 2.05e-07, 0 bad  PASS
-    SGD update rule: max err 0.00e+00  PASS
-    SGD on 8 fixed samples: loss 1.0983 -> 0.7604  PASS
-
-Network 8-16-16-16-16-5:
-  seed=1030
-    forward vs reference: max err 1.36e-08, sum(p) = 1.000000  PASS
-    gradient check: 976 weights, max rel err 1.55e-06, 0 bad  PASS
-    SGD update rule: max err 0.00e+00  PASS
-  seed=1031
-    forward vs reference: max err 3.74e-08, sum(p) = 1.000000  PASS
-    gradient check: 976 weights, max rel err 9.55e-07, 0 bad  PASS
-    SGD update rule: max err 0.00e+00  PASS
-  seed=1032
-    forward vs reference: max err 2.86e-08, sum(p) = 1.000000  PASS
-    gradient check: 976 weights, max rel err 3.11e-06, 0 bad  PASS
-    SGD update rule: max err 0.00e+00  PASS
-    SGD on 8 fixed samples: loss 1.7042 -> 0.0124  PASS
-
-Network 784-32-32-10:
-  seed=1040
-    forward vs reference: max err 1.90e-07, sum(p) = 1.000000  PASS
-    gradient check: 1237 weights, max rel err 3.32e-06, 0 bad  PASS
-    SGD update rule: max err 0.00e+00  PASS
-  seed=1041
-    forward vs reference: max err 5.23e-08, sum(p) = 1.000000  PASS
-    gradient check: 1237 weights, max rel err 7.60e-06, 0 bad  PASS
-    SGD update rule: max err 0.00e+00  PASS
-  seed=1042
-    forward vs reference: max err 1.64e-07, sum(p) = 1.000000  PASS
-    gradient check: 1237 weights, max rel err 1.48e-06, 0 bad  PASS
-    SGD update rule: max err 0.00e+00  PASS
-    SGD on 8 fixed samples: loss 2.9095 -> 0.0015  PASS
-
-MNIST sanity run:
-    784-64-10, 10k SGD steps: test accuracy 90.3% (need > 85%)  PASS
+  Network 4-3-2:
+     1 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00  PASS
+     2 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00  PASS
+     3 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00  PASS
+     4 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00  PASS
+     7 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00  PASS
+     8 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00  PASS
+  Network 10-1-7-3:
+     1 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00  PASS
+     2 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00  PASS
+     3 threads: max diff p 3.0e-08, delta 3.6e-07, W 6.0e-08  PASS
+     4 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00  PASS
+     7 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00  PASS
+     8 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00  PASS
+  Network 6-5-4-3:
+     1 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00  PASS
+     2 threads: max diff p 0.0e+00, delta 6.0e-08, W 7.5e-09  PASS
+     3 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00  PASS
+     4 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00  PASS
+     7 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00  PASS
+     8 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00  PASS
+  Network 8-16-16-16-16-5:
+     1 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00  PASS
+     2 threads: max diff p 1.2e-07, delta 1.6e-07, W 1.2e-07  PASS
+     3 threads: max diff p 6.0e-08, delta 1.5e-07, W 1.2e-07  PASS
+     4 threads: max diff p 8.9e-08, delta 3.6e-07, W 1.2e-07  PASS
+     7 threads: max diff p 1.2e-07, delta 3.0e-07, W 8.9e-08  PASS
+     8 threads: max diff p 6.0e-08, delta 1.8e-07, W 1.2e-07  PASS
+  Network 784-32-32-10:
+     1 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00  PASS
+     2 threads: max diff p 1.8e-07, delta 1.8e-07, W 1.2e-07  PASS
+     3 threads: max diff p 1.8e-07, delta 1.8e-07, W 1.2e-07  PASS
+     4 threads: max diff p 2.1e-07, delta 2.4e-07, W 1.2e-07  PASS
+     7 threads: max diff p 1.5e-07, delta 2.4e-07, W 1.2e-07  PASS
+     8 threads: max diff p 1.2e-07, delta 1.8e-07, W 1.2e-07  PASS
+  Network 784-100-50-10:
+     1 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00  PASS
+     2 threads: max diff p 1.2e-07, delta 1.5e-07, W 1.2e-07  PASS
+     3 threads: max diff p 1.5e-07, delta 1.5e-07, W 6.0e-08  PASS
+     4 threads: max diff p 1.2e-07, delta 1.2e-07, W 8.9e-08  PASS
+     7 threads: max diff p 1.5e-07, delta 1.8e-07, W 8.9e-08  PASS
+     8 threads: max diff p 2.4e-07, delta 2.4e-07, W 8.9e-08  PASS
+  MNIST sanity run:
+    784-64-10, 10k steps, 4 threads: test accuracy 90.3%  PASS
 
 === Final Results ===
-Total tests: 51
-Passed: 51
+Total tests: 37
+Passed: 37
 Failed: 0
 
 All tests PASSED!
-gcc -Wall -Wextra -O2 -fopenmp -std=c99 -Itest_framework -o bin/timing_baseline test_framework/timing_baseline.c baseline_nn.c test_framework/network.c test_framework/mnist.c -lm -fopenmp
-Running baseline FFNN timing analysis...
-./bin/timing_baseline baseline_timing_results.csv 64 256 1024 4096
-Running baseline FFNN timing...
-Output: baseline_timing_results.csv
-MNIST training samples: 60000
+./bin/test_parallel transposed
+=== transposed vs serial baseline ===
+
+  Network 4-3-2:
+     1 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     2 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     3 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     4 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     7 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     8 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+  Network 10-1-7-3:
+     1 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     2 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     3 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     4 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     7 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     8 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+  Network 6-5-4-3:
+     1 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     2 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     3 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     4 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     7 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     8 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+  Network 8-16-16-16-16-5:
+     1 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     2 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     3 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     4 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     7 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     8 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+  Network 784-32-32-10:
+     1 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     2 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     3 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     4 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     7 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     8 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+  Network 784-100-50-10:
+     1 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     2 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     3 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     4 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     7 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+     8 threads: max diff p 0.0e+00, delta 0.0e+00, W 0.0e+00, WT in sync  PASS
+  MNIST sanity run:
+    784-64-10, 10k steps, 4 threads: test accuracy 90.3%  PASS
+
+=== Final Results ===
+Total tests: 37
+Passed: 37
+Failed: 0
+
+All tests PASSED!
+gcc -Wall -Wextra -O2 -fopenmp -std=c99 -Itest_framework -o bin/timing_parallel test_framework/timing_parallel.c baseline_nn.c partial_sums_nn.c transposed_nn.c test_framework/network.c test_framework/mnist.c -lm -fopenmp
+./bin/timing_parallel parallel_timing_results.csv 1,2,4,6,8,12 64 256 1024 4096
+Running parallel FFNN timing...
+Output: parallel_timing_results.csv
+Max threads available: 12 (procs 30)
 Trial method: best of 5 trials per configuration
 
 Network 784-[64 x 2]-10:
-  serial     (1 thread)...     0.065 ms/step  (fwd 0.042, bwd 0.002, upd 0.020)  [55050 params, 2000 steps]
+  serial     ( 1 thread )...     0.074 ms/step  (fwd 0.041, bwd 0.003, upd 0.030)
+  partial    ( 1 thread )...     0.079 ms/step  (fwd 0.045, bwd 0.004, upd 0.030)
+  partial    ( 2 threads)...     0.054 ms/step  (fwd 0.028, bwd 0.007, upd 0.019)
+  partial    ( 4 threads)...     0.039 ms/step  (fwd 0.019, bwd 0.008, upd 0.012)
+  partial    ( 6 threads)...     0.037 ms/step  (fwd 0.017, bwd 0.009, upd 0.011)
+  partial    ( 8 threads)...     0.037 ms/step  (fwd 0.017, bwd 0.010, upd 0.010)
+  partial    (12 threads)...     0.040 ms/step  (fwd 0.017, bwd 0.012, upd 0.011)
+  transposed ( 1 thread )...     0.100 ms/step  (fwd 0.045, bwd 0.004, upd 0.052)
+  transposed ( 2 threads)...     0.063 ms/step  (fwd 0.027, bwd 0.005, upd 0.031)
+  transposed ( 4 threads)...     0.044 ms/step  (fwd 0.019, bwd 0.006, upd 0.019)
+  transposed ( 6 threads)...     0.039 ms/step  (fwd 0.017, bwd 0.007, upd 0.016)
+  transposed ( 8 threads)...     0.038 ms/step  (fwd 0.016, bwd 0.007, upd 0.014)
+  transposed (12 threads)...     0.036 ms/step  (fwd 0.015, bwd 0.008, upd 0.013)
 
 Network 784-[256 x 2]-10:
-  serial     (1 thread)...     0.355 ms/step  (fwd 0.206, bwd 0.051, upd 0.098)  [269322 params, 1856 steps]
+  serial     ( 1 thread )...     0.400 ms/step  (fwd 0.201, bwd 0.051, upd 0.148)
+  partial    ( 1 thread )...     0.388 ms/step  (fwd 0.216, bwd 0.023, upd 0.149)
+  partial    ( 2 threads)...     0.209 ms/step  (fwd 0.113, bwd 0.017, upd 0.079)
+  partial    ( 4 threads)...     0.127 ms/step  (fwd 0.062, bwd 0.021, upd 0.044)
+  partial    ( 6 threads)...     0.099 ms/step  (fwd 0.046, bwd 0.021, upd 0.032)
+  partial    ( 8 threads)...     0.084 ms/step  (fwd 0.038, bwd 0.019, upd 0.026)
+  partial    (12 threads)...     0.069 ms/step  (fwd 0.030, bwd 0.018, upd 0.021)
+  transposed ( 1 thread )...     0.510 ms/step  (fwd 0.213, bwd 0.047, upd 0.250)
+  transposed ( 2 threads)...     0.274 ms/step  (fwd 0.112, bwd 0.027, upd 0.135)
+  transposed ( 4 threads)...     0.149 ms/step  (fwd 0.061, bwd 0.017, upd 0.071)
+  transposed ( 6 threads)...     0.111 ms/step  (fwd 0.045, bwd 0.014, upd 0.052)
+  transposed ( 8 threads)...     0.092 ms/step  (fwd 0.036, bwd 0.013, upd 0.043)
+  transposed (12 threads)...     0.076 ms/step  (fwd 0.029, bwd 0.012, upd 0.035)
 
 Network 784-[1024 x 2]-10:
-  serial     (1 thread)...     5.301 ms/step  (fwd 1.460, bwd 3.156, upd 0.685)  [1863690 params, 268 steps]
+  serial     ( 1 thread )...     7.658 ms/step  (fwd 1.440, bwd 5.195, upd 1.024)
+  partial    ( 1 thread )...     2.846 ms/step  (fwd 1.502, bwd 0.312, upd 1.032)
+  partial    ( 2 threads)...     1.540 ms/step  (fwd 0.760, bwd 0.245, upd 0.535)
+  partial    ( 4 threads)...     0.811 ms/step  (fwd 0.388, bwd 0.142, upd 0.281)
+  partial    ( 6 threads)...     0.565 ms/step  (fwd 0.269, bwd 0.102, upd 0.194)
+  partial    ( 8 threads)...     0.444 ms/step  (fwd 0.207, bwd 0.083, upd 0.154)
+  partial    (12 threads)...     0.314 ms/step  (fwd 0.144, bwd 0.063, upd 0.107)
+  transposed ( 1 thread )...     4.013 ms/step  (fwd 1.478, bwd 0.816, upd 1.718)
+  transposed ( 2 threads)...     2.054 ms/step  (fwd 0.750, bwd 0.412, upd 0.892)
+  transposed ( 4 threads)...     1.043 ms/step  (fwd 0.380, bwd 0.210, upd 0.453)
+  transposed ( 6 threads)...     0.714 ms/step  (fwd 0.257, bwd 0.143, upd 0.314)
+  transposed ( 8 threads)...     0.558 ms/step  (fwd 0.197, bwd 0.113, upd 0.248)
+  transposed (12 threads)...     0.400 ms/step  (fwd 0.137, bwd 0.077, upd 0.185)
 
 Network 784-[4096 x 2]-10:
-  serial     (1 thread)...   135.671 ms/step  (fwd 16.007, bwd 112.237, upd 7.426)  [20037642 params, 24 steps]
+  serial     ( 1 thread )...   138.685 ms/step  (fwd 15.888, bwd 111.774, upd 11.023)
+  partial    ( 1 thread )...    32.518 ms/step  (fwd 16.158, bwd 5.371, upd 10.989)
+  partial    ( 2 threads)...    17.067 ms/step  (fwd 8.147, bwd 3.380, upd 5.540)
+  partial    ( 4 threads)...     8.596 ms/step  (fwd 4.113, bwd 1.638, upd 2.845)
+  partial    ( 6 threads)...     5.775 ms/step  (fwd 2.753, bwd 1.110, upd 1.912)
+  partial    ( 8 threads)...     4.569 ms/step  (fwd 2.125, bwd 0.877, upd 1.568)
+  partial    (12 threads)...     3.107 ms/step  (fwd 1.463, bwd 0.583, upd 1.061)
+  transposed ( 1 thread )...    47.799 ms/step  (fwd 16.011, bwd 13.369, upd 18.419)
+  transposed ( 2 threads)...    24.257 ms/step  (fwd 8.097, bwd 6.713, upd 9.446)
+  transposed ( 4 threads)...    12.102 ms/step  (fwd 4.027, bwd 3.358, upd 4.716)
+  transposed ( 6 threads)...     8.122 ms/step  (fwd 2.695, bwd 2.246, upd 3.181)
+  transposed ( 8 threads)...     6.082 ms/step  (fwd 2.031, bwd 1.687, upd 2.365)
+  transposed (12 threads)...     4.230 ms/step  (fwd 1.368, bwd 1.167, upd 1.695)
 
 Network 784-[64 x 4]-10:
-  serial     (1 thread)...     0.077 ms/step  (fwd 0.047, bwd 0.006, upd 0.023)  [63370 params, 2000 steps]
+  serial     ( 1 thread )...     0.087 ms/step  (fwd 0.045, bwd 0.007, upd 0.034)
+  partial    ( 1 thread )...     0.098 ms/step  (fwd 0.054, bwd 0.009, upd 0.036)
+  partial    ( 2 threads)...     0.059 ms/step  (fwd 0.031, bwd 0.008, upd 0.020)
+  partial    ( 4 threads)...     0.052 ms/step  (fwd 0.024, bwd 0.013, upd 0.015)
+  partial    ( 6 threads)...     0.049 ms/step  (fwd 0.021, bwd 0.014, upd 0.013)
+  partial    ( 8 threads)...     0.048 ms/step  (fwd 0.021, bwd 0.015, upd 0.012)
+  partial    (12 threads)...     0.046 ms/step  (fwd 0.019, bwd 0.016, upd 0.011)
+  transposed ( 1 thread )...     0.120 ms/step  (fwd 0.052, bwd 0.009, upd 0.059)
+  transposed ( 2 threads)...     0.080 ms/step  (fwd 0.033, bwd 0.009, upd 0.038)
+  transposed ( 4 threads)...     0.054 ms/step  (fwd 0.022, bwd 0.008, upd 0.024)
+  transposed ( 6 threads)...     0.051 ms/step  (fwd 0.021, bwd 0.010, upd 0.020)
+  transposed ( 8 threads)...     0.049 ms/step  (fwd 0.020, bwd 0.011, upd 0.018)
+  transposed (12 threads)...     0.048 ms/step  (fwd 0.020, bwd 0.012, upd 0.016)
 
 Network 784-[256 x 4]-10:
-  serial     (1 thread)...     0.596 ms/step  (fwd 0.299, bwd 0.151, upd 0.146)  [400906 params, 1247 steps]
+  serial     ( 1 thread )...     0.660 ms/step  (fwd 0.292, bwd 0.149, upd 0.220)
+  partial    ( 1 thread )...     0.602 ms/step  (fwd 0.319, bwd 0.062, upd 0.220)
+  partial    ( 2 threads)...     0.328 ms/step  (fwd 0.168, bwd 0.042, upd 0.119)
+  partial    ( 4 threads)...     0.183 ms/step  (fwd 0.091, bwd 0.029, upd 0.064)
+  partial    ( 6 threads)...     0.139 ms/step  (fwd 0.066, bwd 0.026, upd 0.047)
+  partial    ( 8 threads)...     0.118 ms/step  (fwd 0.055, bwd 0.025, upd 0.038)
+  partial    (12 threads)...     0.104 ms/step  (fwd 0.047, bwd 0.026, upd 0.031)
+  transposed ( 1 thread )...     0.817 ms/step  (fwd 0.314, bwd 0.136, upd 0.366)
+  transposed ( 2 threads)...     0.443 ms/step  (fwd 0.164, bwd 0.073, upd 0.205)
+  transposed ( 4 threads)...     0.239 ms/step  (fwd 0.087, bwd 0.041, upd 0.110)
+  transposed ( 6 threads)...     0.172 ms/step  (fwd 0.064, bwd 0.031, upd 0.077)
+  transposed ( 8 threads)...     0.142 ms/step  (fwd 0.053, bwd 0.027, upd 0.062)
+  transposed (12 threads)...     0.115 ms/step  (fwd 0.042, bwd 0.024, upd 0.049)
 
 Network 784-[1024 x 4]-10:
-  serial     (1 thread)...    20.804 ms/step  (fwd 3.106, bwd 16.244, upd 1.454)  [3962890 params, 126 steps]
+  serial     ( 1 thread )...    23.699 ms/step  (fwd 3.074, bwd 18.415, upd 2.210)
+  partial    ( 1 thread )...     6.278 ms/step  (fwd 3.181, bwd 0.922, upd 2.176)
+  partial    ( 2 threads)...     3.184 ms/step  (fwd 1.607, bwd 0.476, upd 1.101)
+  partial    ( 4 threads)...     1.686 ms/step  (fwd 0.820, bwd 0.278, upd 0.588)
+  partial    ( 6 threads)...     1.164 ms/step  (fwd 0.562, bwd 0.200, upd 0.402)
+  partial    ( 8 threads)...     0.897 ms/step  (fwd 0.427, bwd 0.162, upd 0.308)
+  partial    (12 threads)...     0.645 ms/step  (fwd 0.299, bwd 0.125, upd 0.221)
+  transposed ( 1 thread )...     9.264 ms/step  (fwd 3.156, bwd 2.441, upd 3.666)
+  transposed ( 2 threads)...     4.672 ms/step  (fwd 1.584, bwd 1.227, upd 1.862)
+  transposed ( 4 threads)...     2.384 ms/step  (fwd 0.799, bwd 0.619, upd 0.965)
+  transposed ( 6 threads)...     1.622 ms/step  (fwd 0.541, bwd 0.418, upd 0.663)
+  transposed ( 8 threads)...     1.231 ms/step  (fwd 0.411, bwd 0.317, upd 0.502)
+  transposed (12 threads)...     0.863 ms/step  (fwd 0.283, bwd 0.218, upd 0.362)
 
 Network 784-[4096 x 4]-10:
-  serial     (1 thread)...   397.714 ms/step  (fwd 43.372, bwd 332.592, upd 21.750)  [53600266 params, 9 steps]
+  serial     ( 1 thread )...   407.274 ms/step  (fwd 42.649, bwd 335.003, upd 29.622)
+  partial    ( 1 thread )...    88.066 ms/step  (fwd 43.047, bwd 15.920, upd 29.099)
+  partial    ( 2 threads)...    46.136 ms/step  (fwd 21.761, bwd 9.538, upd 14.836)
+  partial    ( 4 threads)...    23.480 ms/step  (fwd 11.006, bwd 4.916, upd 7.558)
+  partial    ( 6 threads)...    15.859 ms/step  (fwd 7.356, bwd 3.442, upd 5.062)
+  partial    ( 8 threads)...    12.099 ms/step  (fwd 5.581, bwd 2.611, upd 3.906)
+  partial    (12 threads)...     8.230 ms/step  (fwd 3.746, bwd 1.820, upd 2.664)
+  transposed ( 1 thread )...   132.083 ms/step  (fwd 42.872, bwd 40.038, upd 49.172)
+  transposed ( 2 threads)...    66.492 ms/step  (fwd 21.483, bwd 20.185, upd 24.825)
+  transposed ( 4 threads)...    33.553 ms/step  (fwd 10.778, bwd 10.054, upd 12.721)
+  transposed ( 6 threads)...    22.375 ms/step  (fwd 7.197, bwd 6.726, upd 8.452)
+  transposed ( 8 threads)...    17.994 ms/step  (fwd 5.405, bwd 5.063, upd 7.526)
+  transposed (12 threads)...    11.678 ms/step  (fwd 3.651, bwd 3.391, upd 4.636)
 
-Timing complete! Results written to baseline_timing_results.csv
+Timing complete! Results written to parallel_timing_results.csv
 
 
-========================================================================================================
-BASELINE SERIAL FFNN TIMING SUMMARY
-========================================================================================================
-Hidden   Width    Params       ms/step      Forward        Backward       Update         GFLOP/s   
-layers                                      ms (%)         ms (%)         ms (%)                   
---------------------------------------------------------------------------------------------------------
-2        64       55050        0.065        0.042 (65%)    0.002 (4%)     0.020 (31%)    5.10      
-2        256      269322       0.355        0.206 (58%)    0.051 (14%)    0.098 (28%)    4.56      
-2        1024     1863690      5.301        1.460 (28%)    3.156 (60%)    0.685 (13%)    2.11      
-2        4096     20037642     135.671      16.007 (12%)   112.237 (83%)  7.426 (5%)     0.89      
-4        64       63370        0.077        0.047 (62%)    0.006 (8%)     0.023 (30%)    4.95      
-4        256      400906       0.596        0.299 (50%)    0.151 (25%)    0.146 (24%)    4.04      
-4        1024     3962890      20.804       3.106 (15%)    16.244 (78%)   1.454 (7%)     1.14      
-4        4096     53600266     397.714      43.372 (11%)   332.592 (84%)  21.750 (5%)    0.81      
-========================================================================================================
-Plot saved to baseline_analysis.png
+============================================================================================================================================
+PARTIAL SUMS: ms/step and speedup vs serial baseline
+============================================================================================================================================
+Hidden  Width   Serial ms       1T                2T                4T                6T                8T                12T               
+--------------------------------------------------------------------------------------------------------------------------------------------
+2       64      0.074           0.079/0.93x       0.054/1.36x       0.039/1.88x       0.037/1.99x       0.037/1.98x       0.040/1.84x       
+2       256     0.400           0.388/1.03x       0.209/1.92x       0.127/3.15x       0.099/4.04x       0.084/4.78x       0.069/5.80x       
+2       1024    7.658           2.846/2.69x       1.540/4.97x       0.811/9.44x       0.565/13.57x      0.444/17.25x      0.314/24.42x      
+2       4096    138.685         32.518/4.26x      17.067/8.13x      8.596/16.13x      5.775/24.01x      4.569/30.35x      3.107/44.64x      
+4       64      0.087           0.098/0.90x       0.059/1.48x       0.052/1.70x       0.049/1.80x       0.048/1.83x       0.046/1.88x       
+4       256     0.660           0.602/1.10x       0.328/2.01x       0.183/3.60x       0.139/4.74x       0.118/5.61x       0.104/6.33x       
+4       1024    23.699          6.278/3.77x       3.184/7.44x       1.686/14.06x      1.164/20.36x      0.897/26.43x      0.645/36.76x      
+4       4096    407.274         88.066/4.62x      46.136/8.83x      23.480/17.35x     15.859/25.68x     12.099/33.66x     8.230/49.49x      
+
+============================================================================================================================================
+TRANSPOSED COPY: ms/step and speedup vs serial baseline
+============================================================================================================================================
+Hidden  Width   Serial ms       1T                2T                4T                6T                8T                12T               
+--------------------------------------------------------------------------------------------------------------------------------------------
+2       64      0.074           0.100/0.73x       0.063/1.17x       0.044/1.67x       0.039/1.88x       0.038/1.95x       0.036/2.02x       
+2       256     0.400           0.510/0.78x       0.274/1.46x       0.149/2.69x       0.111/3.61x       0.092/4.37x       0.076/5.27x       
+2       1024    7.658           4.013/1.91x       2.054/3.73x       1.043/7.34x       0.714/10.72x      0.558/13.72x      0.400/19.15x      
+2       4096    138.685         47.799/2.90x      24.257/5.72x      12.102/11.46x     8.122/17.08x      6.082/22.80x      4.230/32.79x      
+4       64      0.087           0.120/0.73x       0.080/1.09x       0.054/1.63x       0.051/1.73x       0.049/1.80x       0.048/1.82x       
+4       256     0.660           0.817/0.81x       0.443/1.49x       0.239/2.77x       0.172/3.83x       0.142/4.65x       0.115/5.76x       
+4       1024    23.699          9.264/2.56x       4.672/5.07x       2.384/9.94x       1.622/14.61x      1.231/19.26x      0.863/27.46x      
+4       4096    407.274         132.083/3.08x     66.492/6.13x      33.553/12.14x     22.375/18.20x     17.994/22.63x     11.678/34.88x     
+
+BEST CONFIGURATION PER NETWORK:
+----------------------------------------------------------------------
+  2 x 64     transposed @ 12T: 0.036 ms/step, 2.02x vs serial
+  2 x 256    partial @ 12T: 0.069 ms/step, 5.80x vs serial
+  2 x 1024   partial @ 12T: 0.314 ms/step, 24.42x vs serial
+  2 x 4096   partial @ 12T: 3.107 ms/step, 44.64x vs serial
+  4 x 64     partial @ 12T: 0.046 ms/step, 1.88x vs serial
+  4 x 256    partial @ 12T: 0.104 ms/step, 6.33x vs serial
+  4 x 1024   partial @ 12T: 0.645 ms/step, 36.76x vs serial
+  4 x 4096   partial @ 12T: 8.230 ms/step, 49.49x vs serial
+Plot saved to parallel_vs_baseline.png
+Plot saved to parallel_scaling.png
 ==========================================
-Job completed on: Mon Nov  2 20:28:06 EST 2026
+Job completed on: Fri Nov  6 23:22:32 EST 2026
